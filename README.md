@@ -5,7 +5,7 @@ Written by: Amaterasu Little
 Purposed for: Aulian Chronicles
 
 Please do not reuse or redistribute any of the code without express concent from me.
-Contact me:
+# Contact me:
   Discord: Ammizen
   email: ammithefox@gmail.com
 
