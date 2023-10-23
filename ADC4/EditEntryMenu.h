@@ -15,8 +15,12 @@ void _EEM_EditValue(std::string name, T* entry) {
 	std::cout << "Current Value: " << *entry << std::endl;
 	std::cout << "New Value: ";
 	std::cin >> *entry;
+	std::cin.clear();
 	return;
 }
+
+template<>
+void _EEM_EditValue<std::string>(std::string name, std::string* entry);
 
 template <typename T>
 void _EditEntryMenu(T entry) {

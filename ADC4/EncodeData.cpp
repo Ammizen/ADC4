@@ -10,11 +10,11 @@ std::vector<unsigned char> EncodeData() {
 	switch (activeEntry.index()) {
 	case 0:
 		item = std::get<Item>(activeEntry);
-		encodedData = SerializeData<Item>(&item, &StatusString);
+		encodedData = SerializeData<Item>(&item);
 		break;
 	case 1:
 		enemy = std::get<Enemy>(activeEntry);
-		encodedData = SerializeData<Enemy>(&enemy, &StatusString);
+		encodedData = SerializeData<Enemy>(&enemy);
 	}
 	return encodedData;
 }

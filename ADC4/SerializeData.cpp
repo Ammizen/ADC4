@@ -2,7 +2,10 @@
 
 std::vector<unsigned char> ToBytes(const char* dat, size_t len) {
 	std::vector<unsigned char> foo(len);
-	memcpy(&foo, &dat, len);
+//	memcpy(&foo, &dat, len);
+	for (int i = 0; i < len; i++) {
+		foo[i] = (unsigned char)dat[i];
+	}
 	return foo;
 }
 

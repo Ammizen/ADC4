@@ -2,6 +2,19 @@
 #include "EditEntryMenu.h"
 #include "CreateEntry.h"
 
+template<>
+void _EEM_EditValue<std::string>(std::string name, std::string* entry) {
+	conio::clrscr();
+	char tmp[10000];
+	std::cout << "Editing Value: " << name << std::endl;
+	std::cout << "Current Value: " << *entry << std::endl;
+	std::cout << "New Value: ";
+	std::cin.getline(tmp, 10000);
+	std::cin.clear();
+	*entry = tmp;
+	return;
+}
+
 template <>
 std::list<std::pair<std::string, VALUEPTR>> _EEM_GetList<Item>(Item* entry) {
 	std::list<std::pair<std::string, VALUEPTR>> outdat;
@@ -169,6 +182,7 @@ std::list<std::pair<std::string, VALUEPTR>> _EEM_GetList(std::vector<bool>* entr
 	return outdat;
 }
 //Fuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
+
 template <>
 void _EEM_EditValue<bool>(std::string name, bool* entry) {
 	conio::clrscr();
@@ -245,6 +259,7 @@ void _EEM_EditValue(std::pair<std::string, VALUEPTR> ptrInfo, std::pair<std::str
 	UnsavedChanges = true;
 	return;
 }
+
 std::list<std::pair<std::string, VALUEPTR>> _EEM_GetList(VALUEPTR contPtr) {
 	std::list<std::pair<std::string, VALUEPTR>> data;
 	switch (contPtr.index()) {
@@ -296,17 +311,20 @@ std::list<std::pair<std::string, VALUEPTR>> _EEM_GetList(VALUEPTR contPtr) {
 	}
 	return data;
 }
+
 void _EEM_MenuDisplay(std::list<std::pair<std::string, VALUEPTR>>* subentryList, std::list<std::pair<std::string, VALUEPTR>>* ptrHistory, std::pair<std::string, VALUEPTR>* currentCont) {
 	int counter = 1;
 	for (std::pair<std::string, VALUEPTR> a : *ptrHistory) {
 		std::cout << a.first + "/";
 	}
+	std::cout << std::endl;
 	std::cout << currentCont->first << std::endl;
-	std::cout << "0. <Up>" << std::endl;
-
+	std::cout << " 0. - <Up>" << std::endl;
 
 	for (std::pair<std::string, VALUEPTR> subentry : *subentryList) {
-		std::cout << counter << ". " << subentry.first;
+		if (counter <= 9) std::cout << " " << counter << ". - " << subentry.first;
+		else std::cout << " " << char(char('A') + (counter - 9)) << ". - " << subentry.first;
+
 		if (subentry.second.index() > 15) { std::cout << " - "; }
 		switch (subentry.second.index()) {
 		case 16:
@@ -339,45 +357,29 @@ void _EEM_MenuDisplay(std::list<std::pair<std::string, VALUEPTR>>* subentryList,
 		std::cout << std::endl;
 		counter++;
 	}
-	std::cout << "Q. Exit Menu" << std::endl;
+
+	std::cout << "ESC - Exit Menu" << std::endl;
 	return;
 }
-std::pair<std::string, VALUEPTR> _EEM_MenuInput(std::list<std::pair<std::string, VALUEPTR>>* subentryList, VALUEPTR* currentCont, std::list<std::pair<std::string, VALUEPTR>>* ptrHistory, bool* ExitMenu) {
+
+std::pair<std::string, VALUEPTR> _EEM_MenuInput(std::list<std::pair<std::string, VALUEPTR>>* subentryList, std::pair<std::string, VALUEPTR>* currentCont, std::list<std::pair<std::string, VALUEPTR>>* ptrHistory, bool* ExitMenu) {
+	char input = conio::getch();
 	int sel;
-	std::string input;
-	std::cin >> input;
+	std::vector<std::pair<std::string, VALUEPTR>> killme{ std::begin(*subentryList), std::end(*subentryList) };
+	std::list<std::pair<std::string, VALUEPTR>>::iterator itr = subentryList->end();
 
-	if (std::tolower(input.at(0)) == 'q') {
-		*ExitMenu = true;
-		return { "EXIT", *currentCont };
-	}
+	if ((char('0') <= input) && (input <= char('9'))) sel = input - char('0');
+	else if ((char('A') <= input) && (input <= char('Z'))) sel = 10 + (input - char('A'));
+	else if (input == '\033') { *ExitMenu = true; return { "EXIT", currentCont->second }; }
+	else { conio::invalidInput(); return *currentCont; }
 
-	try {
-		sel = std::stoi(input);
-	}
-	catch (...)
-	{
-		sel = -1;
-	}
+	if (sel == 0) return ptrHistory->back();
 
-	if ((sel < 0) || (sel > subentryList->size())) {
-		conio::invalidInput();
-		return { ".", *currentCont };
-	}
+	if ((sel <= 0) || (sel > subentryList->size())) { conio::invalidInput(); return *currentCont; }
 
-	if (sel == 0) {
-		if (ptrHistory->empty()) return { ".", *currentCont };
-		return { "..", ptrHistory->back().second };
-	}
-
-	std::list<std::pair<std::string, VALUEPTR>>::iterator itr = subentryList->begin();
-	for (int i = 1; i < sel; i++) {
-		if (itr == subentryList->end()) break;
-		itr++;
-	}
-	if (itr == subentryList->end()) return { ".", *currentCont };
-	return *itr;
+	return killme[sel-1];
 }
+
 template <>
 void _EditEntryMenu<Item>(Item entry) {
 	std::pair<std::string, VALUEPTR> currentCont = { "root", &entry };
@@ -389,7 +391,7 @@ void _EditEntryMenu<Item>(Item entry) {
 		subentryList = _EEM_GetList(currentCont.second);
 		_EEM_MenuDisplay(&subentryList, &ptrHistory, &currentCont);
 		std::cout << std::flush;
-		std::pair<std::string, VALUEPTR> sel = _EEM_MenuInput(&subentryList, &currentCont.second, &ptrHistory, &ExitMenu);
+		std::pair<std::string, VALUEPTR> sel = _EEM_MenuInput(&subentryList, &currentCont, &ptrHistory, &ExitMenu);
 		if (ExitMenu) {
 			if (!UnsavedChanges) return;
 			std::cout << std::endl;
@@ -421,7 +423,7 @@ void _EditEntryMenu<Enemy>(Enemy entry) {
 		subentryList = _EEM_GetList(currentCont.second);
 		_EEM_MenuDisplay(&subentryList, &ptrHistory, &currentCont);
 		std::cout << std::flush;
-		std::pair<std::string, VALUEPTR> sel = _EEM_MenuInput(&subentryList, &currentCont.second, &ptrHistory, &ExitMenu);
+		std::pair<std::string, VALUEPTR> sel = _EEM_MenuInput(&subentryList, &currentCont, &ptrHistory, &ExitMenu);
 		if (ExitMenu) {
 			if (!UnsavedChanges) return;
 			std::cout << std::endl;
