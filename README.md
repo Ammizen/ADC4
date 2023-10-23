@@ -9,6 +9,5 @@ and represents under-development systems designed to be employed in conjunction 
 
 Please do not reuse or redistribute any of the code without express concent from me.
 # Contact me:
-Discord: Ammizen
-
-email: ammithefox@gmail.com
+- Discord: Ammizen
+- Email: ammithefox@gmail.com
