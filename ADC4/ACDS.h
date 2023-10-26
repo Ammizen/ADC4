@@ -203,6 +203,7 @@ typedef std::variant <
 	bool*,						//21
 	std::string*				//22
 > VALUEPTR;
+
 typedef std::variant<
 	Item,
 	Enemy

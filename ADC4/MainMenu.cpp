@@ -2,6 +2,8 @@
 #include "DatabaseInformation.h"
 #include "Menus.h"
 #include "CreateEntry.h"
+#include "SaveData.h"
+#include "ExportData.h"
 
 void MainMenu(void) {
 	bool exitMenu = false;
@@ -31,9 +33,11 @@ void MainMenu(void) {
 		std::cout << controlChar << "\t1.  Create Entry     " << std::endl
 			<< "\t2.  Open Entry       " << std::endl
 			<< "\t3.  Edit Active Entry" << std::endl
-			<< "\t4.  Export Menu      " << std::endl
-			<< "\t5.  Compiler Menu    " << std::endl
-			<< "\t6.  Update Database  " << controlEnd << std::endl
+			<< "\t4.  Write Entry      " << std::endl
+			<< "\t5.  Export Menu      " << std::endl
+			<< "\t6.  Compiler Menu    " << std::endl
+			<< "\t7.  Update Database  " << std::endl
+			<< "\t8.  Edit Database Key" << controlEnd << std::endl
 			<< "\t0.  Change Database  " << std::endl
 			<< "\t~   System Options   " << std::endl
 			<< "\tESC Exit Program     " << std::endl;
@@ -42,26 +46,38 @@ void MainMenu(void) {
 
 		switch (sel) {
 		case '1':
-			if (selectedDB == DB_NONE) break;
+			if (selectedDB == DB_NONE) { std::cout << "\a"; break; }
 			CreateEntry();
 			break;
 		case '2':
-			
+			if (selectedDB == DB_NONE) { std::cout << "\a"; break; }
+			OpenEntryMenu();
 			break;
 		case '3':
-			if (selectedDB == DB_NONE) break;
+			if (selectedDB == DB_NONE) { std::cout << "\a"; break; }
 			EditEntryMenu();
 			break;
 		case '4':
+			if (selectedDB == DB_NONE) { std::cout << "\a"; break; }
+			SaveData();
 			break;
 		case '5':
+			if (selectedDB == DB_NONE) { std::cout << "\a"; break; }
+			ExportData();
 			break;
 		case '6':
+			if (selectedDB == DB_NONE) { std::cout << "\a"; break; }
+			break;
+		case '7':
+			if (selectedDB == DB_NONE) { std::cout << "\a"; break; }
+			break;
+		case '8':
 			break;
 		case '0':
 			ChangeDatabaseMenu();
 			break;
 		case '~':
+		case '`':
 			EditSettings();
 			break;
 		case '\033':
