@@ -4,6 +4,7 @@
 #include "CreateEntry.h"
 #include "SaveData.h"
 #include "ExportData.h"
+#include "CompileData.h"
 
 void MainMenu(void) {
 	bool exitMenu = false;
@@ -30,17 +31,18 @@ void MainMenu(void) {
 
 		controlChar = (selectedDB == DB_NONE) ? "\033[31;100m" : "";
 
-		std::cout << controlChar << "\t1.  Create Entry     " << std::endl
-			<< "\t2.  Open Entry       " << std::endl
-			<< "\t3.  Edit Active Entry" << std::endl
-			<< "\t4.  Write Entry      " << std::endl
-			<< "\t5.  Export Menu      " << std::endl
-			<< "\t6.  Compiler Menu    " << std::endl
-			<< "\t7.  Update Database  " << std::endl
-			<< "\t8.  Edit Database Key" << controlEnd << std::endl
-			<< "\t0.  Change Database  " << std::endl
-			<< "\t~   System Options   " << std::endl
-			<< "\tESC Exit Program     " << std::endl;
+		std::cout << controlChar	<< "\t1.  Create Entry     "				<< std::endl
+									<< "\t2.  Open Entry       "				<< std::endl
+									<< "\t3.  Edit Active Entry"				<< std::endl
+									<< "\t4.  Write Entry      "				<< std::endl
+									<< "\t5.  Export Menu      "				<< std::endl
+									<< "\t6.  Import Menu      "				<< std::endl
+									<< "\t7.  Compiler Menu    "				<< std::endl
+									<< "\t8.  Update Database  "				<< std::endl
+									<< "\t9.  Edit Database Key" << controlEnd	<< std::endl
+									<< "\t0.  Change Database  "				<< std::endl
+									<< "\t~   System Options   "				<< std::endl
+									<< "\tESC Exit Program     "				<< std::endl;
 
 		char sel = tolower(conio::getch());
 
@@ -70,8 +72,12 @@ void MainMenu(void) {
 			break;
 		case '7':
 			if (selectedDB == DB_NONE) { std::cout << "\a"; break; }
+			CompileData();
 			break;
 		case '8':
+			if (selectedDB == DB_NONE) { std::cout << "\a"; break; }
+			break;
+		case '9':
 			break;
 		case '0':
 			ChangeDatabaseMenu();

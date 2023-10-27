@@ -5,8 +5,10 @@
 #include <chrono>
 #include <cmath>
 #include <filesystem>
+#include <format>
 #include <fstream>
 #include <future>
+#include <iomanip>
 #include <iostream>
 #include <list>
 #include <numbers>
@@ -24,6 +26,7 @@
 #include "ACDS.h"
 #include "Menus.h"
 #include "errors.h"
+#include "toml.hpp"
 
 constexpr auto ADC_VERSION = 4;
 constexpr auto ADC_BUILD = 3;

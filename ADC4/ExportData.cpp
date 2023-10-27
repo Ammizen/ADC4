@@ -184,6 +184,8 @@ void ExportData(std::string filename) {
 }
 
 void ExportData(void) {
+	conio::clrscr();
+	std::cout << "Exporting Data..." << std::endl;
 	std::string filename;
 	switch (activeEntry.index()) {
 	case 0:

@@ -51,7 +51,10 @@ void SaveData() {
 		ID = std::strtol(tmp.c_str(), &ptr, 10);
 	}
 	data = EncodeData();
-	fs::path fileLoc = fs::path(dbLoc.string() + "\\" + name + "." + ToLower(GetDatabaseName()));
+	std::stringstream ss;
+	ss << std::setw(5) << std::setfill('0') << ID;
+	std::string tmp = dbLoc.string() + "\\" + ss.str() + "_" + name + "." + ToLower(GetDatabaseName());
+	fs::path fileLoc = fs::path(tmp);
 	//dbLoc = fs::path(DatabaseLocation + "\\" + GetDatabaseName() + ".adb");
 
 	std::fstream fin = std::fstream(fileLoc, std::ios::in | std::ios::binary);
