@@ -73,6 +73,31 @@ void UpdateEntry<Enemy>(std::vector<unsigned char>* data, std::vector<std::strin
 	return;
 }
 
+
+void CreateNewKey() {
+	std::vector<std::string> Key[11];
+	std::fstream fout(DatabaseLocation + "/" + GetDatabaseName() + "/key.csm");
+	Key[0] = sysdat.elementList;
+	Key[1] = sysdat.skilltypeList;
+	Key[2] = sysdat.weapontypeList;
+	Key[3] = sysdat.armortypeList;
+	Key[4] = sysdat.equipmenttypeList;
+	Key[5] = sysdat.itemTypeList;
+	Key[6] = sysdat.itemEffectTypeList;
+	Key[7] = sysdat.statusEffectList;
+	Key[8] = sysdat.magicAbilityTypes;
+	Key[9] = sysdat.physAbilityTypes;
+	Key[10] = sysdat.passiveAbilityTypes;
+	for (std::vector<std::string> vs : Key) {
+		for (std::string s : vs) {
+			fout << s << ",";
+		}
+		fout << "\n";
+	}
+	fout << std::flush;
+	fout.close();
+}
+
 void UpdateDatabaseKeyMenu(void) {
 	conio::clrscr();
 	std::cout << "Update the current database's keys?\n\tCaution: This may take a while." << std::endl;
@@ -80,6 +105,15 @@ void UpdateDatabaseKeyMenu(void) {
 
 	std::cout << "Loading old key..." << std::endl;
 	std::fstream keyIn(DatabaseLocation + "\\" + GetDatabaseName() + "\\key.csv");
+	if (keyIn.fail()) {
+		std::cout << "WARNING! 'key.csv' could not be found! Create one now?\n\tCaution: If you create a new key file, some data may be unreadable.\n\t\t" << std::flush;
+		if (!conio::consolePromptBool()) { return; }
+		std::cout << "Creating new key now..." << std::endl;
+		CreateNewKey();
+		std::cout << "New key successfully created!" << std::endl;
+		conio::pause();
+		return;
+	}
 	char* str = new char[1000000]; //1MB
 	std::vector<std::string> Key[11];
 	for (int i = 0; i < 11; i++) {
@@ -110,4 +144,25 @@ void UpdateDatabaseKeyMenu(void) {
 		fout << std::flush;
 		fout.close();
 	}
+
+	std::fstream fout(DatabaseLocation + "/" + GetDatabaseName() + "/key.csm");
+	Key[0] = sysdat.elementList;
+	Key[1] = sysdat.skilltypeList;
+	Key[2] = sysdat.weapontypeList;
+	Key[3] = sysdat.armortypeList;
+	Key[4] = sysdat.equipmenttypeList;
+	Key[5] = sysdat.itemTypeList;
+	Key[6] = sysdat.itemEffectTypeList;
+	Key[7] = sysdat.statusEffectList;
+	Key[8] = sysdat.magicAbilityTypes;
+	Key[9] = sysdat.physAbilityTypes;
+	Key[10] = sysdat.passiveAbilityTypes;
+	for (std::vector<std::string> vs : Key) {
+		for (std::string s : vs) {
+			fout << s << ",";
+		}
+		fout << "\n";
+	}
+	fout << std::flush;
+	fout.close();
 }

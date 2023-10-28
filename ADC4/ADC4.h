@@ -29,7 +29,7 @@
 #include "toml.hpp"
 
 constexpr auto ADC_VERSION = 4;
-constexpr auto ADC_BUILD = 12;
+constexpr auto ADC_BUILD = 13;
 constexpr auto HEADER_BYTESIZE = 9;
 
 #ifdef _WIN32
