@@ -73,7 +73,7 @@ toml::table _ExportData<Enemy>(void) {
 	tmpTblB.insert("END",	tmp.base.attrib.AEnd);
 	tmpTblB.insert("INT",	tmp.base.attrib.AInt);
 	tmpTblB.insert("VIG",	tmp.base.attrib.AVig);
-	tmpTblA.insert("params",tmpTblB);
+	tmpTblA.insert("attrib",tmpTblB);
 	tmpTblB.clear();
 	tmpTblB.insert("ATK",	tmp.base.statBonus.BAtk);
 	tmpTblB.insert("DEF",	tmp.base.statBonus.BDef);

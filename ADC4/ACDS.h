@@ -10,17 +10,17 @@ enum AuliaDataType { ADT_NONE, ADT_ITEM, ADT_ENEMY };
 enum AuliaDBType { DB_NONE, DB_ITEM, DB_ENEMY };
 
 struct SystemData {
-	std::vector<std::string> elementList;
-	std::vector<std::string> skilltypeList;
-	std::vector<std::string> weapontypeList;
-	std::vector<std::string> armortypeList;
-	std::vector<std::string> equipmenttypeList;
-	std::vector<std::string> itemTypeList;
-	std::vector<std::string> itemEffectTypeList;
-	std::vector<std::string> statusEffectList;
-	std::vector<std::string> magicAbilityTypes;
-	std::vector<std::string> physAbilityTypes;
-	std::vector<std::string> passiveAbilityTypes;
+	std::vector<std::string> elementList;			//0
+	std::vector<std::string> skilltypeList;			//1
+	std::vector<std::string> weapontypeList;		//2
+	std::vector<std::string> armortypeList;			//3
+	std::vector<std::string> equipmenttypeList;		//4
+	std::vector<std::string> itemTypeList;			//5
+	std::vector<std::string> itemEffectTypeList;	//6
+	std::vector<std::string> statusEffectList;		//7
+	std::vector<std::string> magicAbilityTypes;		//8
+	std::vector<std::string> physAbilityTypes;		//9
+	std::vector<std::string> passiveAbilityTypes;	//10
 };
 struct MetaData {
 	int checksum = 0;

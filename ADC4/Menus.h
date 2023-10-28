@@ -5,3 +5,4 @@ void EditEntryMenu(void);
 void EditSettings(void);
 void OpenEntryMenu(void);
 void ImportEntryMenu(void);
+void UpdateDatabaseKeyMenu(void);

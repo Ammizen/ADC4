@@ -5,6 +5,7 @@
 #include "SaveData.h"
 #include "ExportData.h"
 #include "CompileData.h"
+#include "EditDatabaseKey.h"
 
 void MainMenu(void) {
 	bool exitMenu = false;
@@ -38,14 +39,13 @@ void MainMenu(void) {
 									<< "\t5.  Export Menu      "				<< std::endl
 									<< "\t6.  Import Menu      "				<< std::endl
 									<< "\t7.  Compiler Menu    "				<< std::endl
-									<< "\t8.  Update Database  "				<< std::endl
-									<< "\t9.  Edit Database Key" << controlEnd	<< std::endl
+									<< "\t8.  Update Database  " << controlEnd	<< std::endl
+									<< "\t9.  Edit Database Key" 				<< std::endl
 									<< "\t0.  Change Database  "				<< std::endl
 									<< "\t~   System Options   "				<< std::endl
 									<< "\tESC Exit Program     "				<< std::endl;
 
 		char sel = tolower(conio::getch());
-
 		switch (sel) {
 		case '1':
 			if (selectedDB == DB_NONE) { std::cout << "\a"; break; }
@@ -69,6 +69,7 @@ void MainMenu(void) {
 			break;
 		case '6':
 			if (selectedDB == DB_NONE) { std::cout << "\a"; break; }
+			ImportEntryMenu();
 			break;
 		case '7':
 			if (selectedDB == DB_NONE) { std::cout << "\a"; break; }
@@ -76,8 +77,10 @@ void MainMenu(void) {
 			break;
 		case '8':
 			if (selectedDB == DB_NONE) { std::cout << "\a"; break; }
+			UpdateDatabaseKeyMenu();
 			break;
 		case '9':
+			EditDBKeyMenu();
 			break;
 		case '0':
 			ChangeDatabaseMenu();
