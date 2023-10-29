@@ -38,7 +38,7 @@ void ImportEntry<Item>(toml::table doc, std::string filename) {
 	});
 	activeEntry = newItem;
 }
-
+//GHAWD DAMN! FINALLY FINISHED THIS PART!
 template <>
 void ImportEntry<Enemy>(toml::table doc, std::string filename) {
 	MetaData meta = MetaData(

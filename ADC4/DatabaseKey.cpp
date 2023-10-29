@@ -1,4 +1,5 @@
 #include "DatabaseKey.h"
+#include "DatabaseInformation.h"
 #include "CustomStringUtils.h"
 
 bool _CompareKeys(std::vector<std::string>* tokens, std::vector<std::string>* systemTokens) {
@@ -11,34 +12,32 @@ bool _CompareKeys(std::vector<std::string>* tokens, std::vector<std::string>* sy
 }
 
 int CheckKey(std::filesystem::path filepath) {
-	std::string line;
-	std::vector<std::string> tokens;
-	std::fstream fin(filepath.string() + "\\.key", std::ios::in);
-	if (fin.fail()) return -1;
-
-	getline(fin, line);
-	tokens = SplitString(line, ",");
-	if (_CompareKeys(&tokens, &sysdat.elementList)) return 1;
-	tokens.clear();
-
-	getline(fin, line);
-	tokens = SplitString(line, ",");
-	if (_CompareKeys(&tokens, &sysdat.skilltypeList)) return 2;
-	tokens.clear();
-
-	getline(fin, line);
-	tokens = SplitString(line, ",");
-	if (_CompareKeys(&tokens, &sysdat.weapontypeList)) return 3;
-	tokens.clear();
-
-	getline(fin, line);
-	tokens = SplitString(line, ",");
-	if (_CompareKeys(&tokens, &sysdat.armortypeList)) return 4;
-	tokens.clear();
-
-	getline(fin, line);
-	tokens = SplitString(line, ",");
-	if (_CompareKeys(&tokens, &sysdat.equipmenttypeList)) return 5;
-
+	std::fstream keyIn(DatabaseLocation + "\\" + GetDatabaseName() + "\\key.csv");
+	if (keyIn.fail()) return -1;
+	char* str = new char[1000000]; //1MB
+	std::vector<std::string> CachedKey[11];
+	for (int i = 0; i < 11; i++) {
+		keyIn.getline(str, 1000000);
+		CachedKey[i] = SplitString(str, ",");
+	}
+	keyIn.close();
+	std::vector<std::string> SystemKey[11];
+	SystemKey[0] = sysdat.elementList;
+	SystemKey[1] = sysdat.skilltypeList;
+	SystemKey[2] = sysdat.weapontypeList;
+	SystemKey[3] = sysdat.armortypeList;
+	SystemKey[4] = sysdat.equipmenttypeList;
+	SystemKey[5] = sysdat.itemTypeList;
+	SystemKey[6] = sysdat.itemEffectTypeList;
+	SystemKey[7] = sysdat.statusEffectList;
+	SystemKey[8] = sysdat.magicAbilityTypes;
+	SystemKey[9] = sysdat.physAbilityTypes;
+	SystemKey[10] = sysdat.passiveAbilityTypes;
+	for (int i = 0; i < 11; i++) {
+		if (SystemKey[i].size() != CachedKey[i].size()) return 1;
+		for (int j = 0; j < SystemKey[i].size(); j++) {
+			if (SystemKey[i][j] != CachedKey[i][j]) return 1;
+		}
+	}
 	return 0;
 }

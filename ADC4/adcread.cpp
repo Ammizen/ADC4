@@ -12,6 +12,16 @@ namespace adcrw {
 		return outdat;
 	}
 
+	std::vector<unsigned char> ReadFile(std::fstream* file, int filesize) {
+		file->seekg(std::ios::end);
+		file->seekg(std::ios::beg);
+		std::vector<unsigned char> outdat(filesize);
+		char* buffer = new char[filesize];
+		file->read(buffer, filesize);
+		memcpy(&outdat.front(), &buffer, sizeof(buffer));
+		return outdat;
+	}
+
 	AuliaDataType GetDatatype(std::filesystem::path filepath) {
 		std::string ext = filepath.extension().string();
 		if (ext == "item") return ADT_ITEM;

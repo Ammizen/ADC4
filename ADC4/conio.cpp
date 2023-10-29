@@ -28,9 +28,11 @@ namespace conio {
 		}
 	}
 	char getch(void) {
+		std::cout << std::flush;
 		return _getch();
 	}
 	char getche(void) {
+		std::cout << std::flush;
 		return _getche();
 	}
 	void pause(void) {
@@ -108,6 +110,7 @@ namespace conio {
 		}
 
 		char getch_(bool echo) {
+			std::cout << std::flush;
 			char ch;
 			initTerminal(echo);
 			ch = getchar();

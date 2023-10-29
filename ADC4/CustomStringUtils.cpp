@@ -7,6 +7,7 @@ std::vector<std::string> SplitString(std::string str, std::string delim) {
 		outdat.push_back(str.substr(0, pos));
 		str.erase(0, pos + delim.length());
 	}
+	outdat.push_back(str);
 	outdat.shrink_to_fit();
 	return outdat;
 }

@@ -3,6 +3,7 @@
 #include "ParseData.h"
 #include "SerializeData.h"
 #include "CustomStringUtils.h"
+#include "adcread.h"
 
 void UpdateEntry(std::vector<bool>* entry, std::vector<std::string> oldKey[], int keyID) {
 	oldKey += keyID;
@@ -55,8 +56,8 @@ void UpdateEntry(std::vector<bool>* entry, std::vector<std::string> oldKey[], in
 }
 
 template<>
-void UpdateEntry<Item>(std::vector<unsigned char>* data, std::vector<std::string>* oldKey) {
-	Item item = ParseData<Item>(data);
+void UpdateEntry<Item>(std::vector<unsigned char>* data, std::vector<std::string>* oldKey, std::string filename) {
+	Item item = ParseData<Item>(data, filename);
 	UpdateEntry(&item.data.itemType, oldKey, 5);
 	std::list<ItemEffect>::iterator itr = item.effects.begin();
 	for (ItemEffect ie : item.effects) {
@@ -64,11 +65,12 @@ void UpdateEntry<Item>(std::vector<unsigned char>* data, std::vector<std::string
 		UpdateEntry(&ie.AfflictionFlags, oldKey, 7);
 		*itr = ie;
 	}
-	*data = SerializeData<Item>(&item);
+	std::vector<unsigned char> tmp = SerializeData<Item>(&item);
+	data->swap(tmp);
 }
 
 template<>
-void UpdateEntry<Enemy>(std::vector<unsigned char>* data, std::vector<std::string>* oldKey) {
+void UpdateEntry<Enemy>(std::vector<unsigned char>* data, std::vector<std::string>* oldKey, std::string filename) {
 	Enemy enemy = ParseData<Enemy>(data);
 	return;
 }
@@ -76,7 +78,8 @@ void UpdateEntry<Enemy>(std::vector<unsigned char>* data, std::vector<std::strin
 
 void CreateNewKey() {
 	std::vector<std::string> Key[11];
-	std::fstream fout(DatabaseLocation + "/" + GetDatabaseName() + "/key.csm");
+	std::fstream fout(DatabaseLocation + "/" + GetDatabaseName() + "/key.csv", std::ios::out);
+	
 	Key[0] = sysdat.elementList;
 	Key[1] = sysdat.skilltypeList;
 	Key[2] = sysdat.weapontypeList;
@@ -89,13 +92,15 @@ void CreateNewKey() {
 	Key[9] = sysdat.physAbilityTypes;
 	Key[10] = sysdat.passiveAbilityTypes;
 	for (std::vector<std::string> vs : Key) {
+		std::stringstream ss;
 		for (std::string s : vs) {
-			fout << s << ",";
+			ss << s << ",";
 		}
-		fout << "\n";
+		fout << ss.str().substr(0, ss.str().size()-1) << "\n";
 	}
 	fout << std::flush;
 	fout.close();
+	DBStatus = 0;
 }
 
 void UpdateDatabaseKeyMenu(void) {
@@ -108,7 +113,7 @@ void UpdateDatabaseKeyMenu(void) {
 	if (keyIn.fail()) {
 		std::cout << "WARNING! 'key.csv' could not be found! Create one now?\n\tCaution: If you create a new key file, some data may be unreadable.\n\t\t" << std::flush;
 		if (!conio::consolePromptBool()) { return; }
-		std::cout << "Creating new key now..." << std::endl;
+		std::cout << "Creating; " << DatabaseLocation + "\\" + GetDatabaseName() + "\\key.csv" << std::endl;
 		CreateNewKey();
 		std::cout << "New key successfully created!" << std::endl;
 		conio::pause();
@@ -121,16 +126,19 @@ void UpdateDatabaseKeyMenu(void) {
 		Key[i] = SplitString(str, ",");
 	}
 	delete[] str;
+	keyIn.close();
 	std::cout << "Updating entries..." << std::endl;
 	for (auto& entry : fs::directory_iterator(DatabaseLocation + "/" + GetDatabaseName())) {
+		std::string tmp = "." + ToLower(GetDatabaseName());
+		if (entry.path().extension() != tmp) continue;
 		std::vector<unsigned char> data(entry.file_size());
 		int counter = 0;
 		std::fstream fin(entry.path().string(), std::ios::in | std::ios::binary);
-		while (!fin.eof()) { data[counter] = fin.get(); counter++; }
+		data = adcrw::ReadFile(&fin, entry.file_size());
 		fin.close();
 		switch (selectedDB) {
 		case DB_ITEM:
-			UpdateEntry<Item>(&data, Key);
+			UpdateEntry<Item>(&data, Key, entry.path().filename().string());
 			break;
 		case DB_ENEMY:
 		default:
@@ -165,4 +173,5 @@ void UpdateDatabaseKeyMenu(void) {
 	}
 	fout << std::flush;
 	fout.close();
+	DBStatus = 0;
 }

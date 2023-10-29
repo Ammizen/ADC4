@@ -3,7 +3,32 @@
 #include "ACDS.h"
 #include "DatabaseKey.h"
 #include "DatabaseInformation.h"
+#include "CustomStringUtils.h"
 #include "Menus.h"
+
+void LoadKeys() {
+	std::fstream keyIn(DatabaseLocation + "\\" + GetDatabaseName() + "\\key.csv");
+	if (keyIn.fail()) return;
+	char* str = new char[1000000]; //1MB
+	std::vector<std::string> Key[11];
+	for (int i = 0; i < 11; i++) {
+		keyIn.getline(str, 1000000);
+		Key[i] = SplitString(str, ",");
+	}
+	delete[] str;
+	sysdat.elementList = Key[0];
+	sysdat.skilltypeList = Key[1];
+	sysdat.weapontypeList = Key[2];
+	sysdat.armortypeList = Key[3];
+	sysdat.equipmenttypeList = Key[4];
+	sysdat.itemTypeList = Key[5];
+	sysdat.itemEffectTypeList = Key[6];
+	sysdat.statusEffectList = Key[7];
+	sysdat.magicAbilityTypes = Key[8];
+	sysdat.physAbilityTypes = Key[9];
+	sysdat.passiveAbilityTypes = Key[10];
+	return;
+}
 
 void ChangeDatabaseMenu(void) {
 	std::filesystem::path filepath;
@@ -52,6 +77,7 @@ void ChangeDatabaseMenu(void) {
 		}
 
 		selectedDB = newDB;
+		LoadKeys();
 		int status = CheckKey(filepath);
 		if (status != 0) DBStatus = 1;
 		if (status == -1) DBStatus = -1;

@@ -69,9 +69,9 @@ template<>
 Item ParseData<Item>(std::vector<unsigned char>* indata, std::string filename) {
 	Item item = Item();
 	std::pair<int, std::string> tmp;
+	char* endPtr;
 
-	item.meta.filename = filename;
-
+	item.meta.filename = filename.substr(6, filename.find_last_of('.') - 6);
 	int ptr = 0;
 
 	memcpy(&item.meta.checksum, &indata->at(ptr), 4);
@@ -80,7 +80,8 @@ Item ParseData<Item>(std::vector<unsigned char>* indata, std::string filename) {
 	memcpy(&item.meta.datatype, &indata->at(ptr), 1);
 	ptr += 1 + 2; //Skip 2 Bytes... ADC Ver. & Build.
 
-	memcpy(&item.meta.ID, &indata->at(ptr), 2);
+	item.meta.ID = std::strtol(filename.substr(0, 5).c_str(), &endPtr, 10);
+	//memcpy(&item.meta.ID, &indata->at(ptr), 2);
 	ptr += 2;
 
 	std::vector<unsigned char> flagBuffer(ceil((double)sysdat.itemTypeList.size() / 8.0));
