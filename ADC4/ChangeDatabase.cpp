@@ -7,7 +7,7 @@
 #include "Menus.h"
 
 void LoadKeys() {
-	std::fstream keyIn(DatabaseLocation + "\\" + GetDatabaseName() + "\\key.csv");
+	std::fstream keyIn(DatabaseLocation + DIRSEP + GetDatabaseName() + DIRSEP +"key.csv");
 	if (keyIn.fail()) return;
 	char* str = new char[1000000]; //1MB
 	std::vector<std::string> Key[11];
@@ -63,10 +63,10 @@ void ChangeDatabaseMenu(void) {
 
 		switch (newDB) {
 		case DB_ITEM:
-			filepath = std::filesystem::path(DatabaseLocation + "\\ITEM");
+			filepath = std::filesystem::path(DatabaseLocation + DIRSEP + "ITEM");
 			break;
 		case DB_ENEMY:
-			filepath = std::filesystem::path(DatabaseLocation + "\\ENEMY");
+			filepath = std::filesystem::path(DatabaseLocation + DIRSEP + "ENEMY");
 			break;
 		case DB_NONE:
 			selectedDB = DB_NONE;

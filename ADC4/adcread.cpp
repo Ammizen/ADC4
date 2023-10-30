@@ -42,7 +42,7 @@ namespace adcrw {
 	int GetInt(std::fstream* stream) {
 		if (stream->bad()) throw std::runtime_error("Bad stream");
 		int outdat = 0;
-		std::vector<byte> tmp = std::vector<byte>(4);
+		std::vector<unsigned char> tmp = std::vector<unsigned char>(4);
 		for (int i = 0; i < sizeof(int); i++) tmp[i] = stream->get();
 		memcpy(&outdat, tmp.data(), sizeof(int));
 		return outdat;

@@ -175,11 +175,11 @@ void ExportData(std::string filename) {
 		break;
 	}
 
-	std::fstream fout(ExportLocation + "/" + filename + ".toml", std::ios::out);
+	std::fstream fout(ExportLocation + DIRSEP + filename + ".toml", std::ios::out);
 	fout << doc;
 	fout << std::flush;
 	fout.close();
-	std::cout << "Success!\n\tExport location - " << ExportLocation << "/" << filename << ".toml" << std::endl;
+	std::cout << "Success!\n\tExport location - " << ExportLocation << DIRSEP << filename << ".toml" << std::endl;
 	conio::pause();
 }
 

@@ -14,7 +14,8 @@ void CheckDBFolder(std::string folderName) {
 }
 
 void SaveData() {
-	fs::path dbLoc = fs::path(DatabaseLocation + "\\" + ToLower(GetDatabaseName()));
+	conio::clrscr();
+	fs::path dbLoc = fs::path(DatabaseLocation + DIRSEP + ToLower(GetDatabaseName()));
 	
 	int ID;
 	int clusterNum = -1;
@@ -39,21 +40,36 @@ void SaveData() {
 		return;
 	}
 
-	if (name.empty()) {
+	while (name.empty()) {
 		std::cout << "\n\tThere was no filename specified. Please specify one now: \n\t\t" << std::flush;
 		std::cin >> name;
+		if (name.empty()) std::cout << "\n\t\tInvalid name.";
 	}
-	if (ID <= 0) {
+	while (ID <= 0) {
 		std::cout << "\n\tThere was either an invalid ID, or no ID specified. Please correct this now;\n\t\t" << std::flush;
 		std::string tmp;
 		std::cin >> tmp;
 		char* ptr;
 		ID = std::strtol(tmp.c_str(), &ptr, 10);
+		if (ID <= 0) std::cout << "\n\t\tInvalid ID.";
+		for (const auto& entry : fs::directory_iterator(dbLoc)) {
+			if (std::strtol(entry.path().filename().string().substr(0, 5).c_str(), &ptr, 10) != ID) continue;
+			std::cout << "\n\t\t\033[93mCaution: There was another existing entry with ID matching this one.\033[m" << std::endl;
+			std::cout << "\t\t\tWould you like to overwrite the conflicting entry?";
+			if (conio::consolePromptBool()) {
+				remove(entry.path());
+				std::cout << "\t\t\tDeleted!";
+				break;
+			}
+			std::cout << "\n\n\t\tWould you like to continue saving the conflicting entry?\n\t\t\t\033[93mCaution: If you have multiple entries that share one ID,\n\t\t\t\tit could cause problems reading the entries.\033[m" << std::flush;
+			if (conio::consolePromptBool()) break;
+			return;
+		}
 	}
 	data = EncodeData();
 	std::stringstream ss;
 	ss << std::setw(5) << std::setfill('0') << ID;
-	std::string tmp = dbLoc.string() + "\\" + ss.str() + "_" + name + "." + ToLower(GetDatabaseName());
+	std::string tmp = dbLoc.string() + DIRSEP + ss.str() + "_" + name + "." + ToLower(GetDatabaseName());
 	fs::path fileLoc = fs::path(tmp);
 	//dbLoc = fs::path(DatabaseLocation + "\\" + GetDatabaseName() + ".adb");
 

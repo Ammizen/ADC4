@@ -16,6 +16,7 @@ bool verboseMode = false;
 std::monostate null = std::monostate();
 #pragma endregion
 
+#ifdef _WIN32
 void StinkyWindowsConsoleSetup() {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	DWORD mode;
@@ -23,6 +24,7 @@ void StinkyWindowsConsoleSetup() {
 	mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
 	SetConsoleMode(hConsole, mode);
 }
+#endif
 
 int main() {
 	std::cout << "Aulia Data Manager" << std::endl;

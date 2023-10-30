@@ -12,7 +12,7 @@ bool _CompareKeys(std::vector<std::string>* tokens, std::vector<std::string>* sy
 }
 
 int CheckKey(std::filesystem::path filepath) {
-	std::fstream keyIn(DatabaseLocation + "\\" + GetDatabaseName() + "\\key.csv");
+	std::fstream keyIn(DatabaseLocation + DIRSEP + GetDatabaseName() + DIRSEP + "key.csv");
 	if (keyIn.fail()) return -1;
 	char* str = new char[1000000]; //1MB
 	std::vector<std::string> CachedKey[11];
