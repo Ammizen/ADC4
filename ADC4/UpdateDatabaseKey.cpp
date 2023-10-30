@@ -78,7 +78,7 @@ void UpdateEntry<Enemy>(std::vector<unsigned char>* data, std::vector<std::strin
 
 void CreateNewKey() {
 	std::vector<std::string> Key[11];
-	std::fstream fout(DatabaseLocation + "/" + GetDatabaseName() + "/key.csv", std::ios::out);
+	std::fstream fout(DatabaseLocation + DIRSEP + GetDatabaseName() + DIRSEP + "key.csv", std::ios::out);
 	
 	Key[0] = sysdat.elementList;
 	Key[1] = sysdat.skilltypeList;
@@ -109,11 +109,11 @@ void UpdateDatabaseKeyMenu(void) {
 	if (!conio::consolePromptBool()) return;
 
 	std::cout << "Loading old key..." << std::endl;
-	std::fstream keyIn(DatabaseLocation + "\\" + GetDatabaseName() + "\\key.csv");
+	std::fstream keyIn(DatabaseLocation + DIRSEP + GetDatabaseName() + DIRSEP + "key.csv");
 	if (keyIn.fail()) {
 		std::cout << "WARNING! 'key.csv' could not be found! Create one now?\n\tCaution: If you create a new key file, some data may be unreadable.\n\t\t" << std::flush;
 		if (!conio::consolePromptBool()) { return; }
-		std::cout << "Creating; " << DatabaseLocation + "\\" + GetDatabaseName() + "\\key.csv" << std::endl;
+		std::cout << "Creating; " << DatabaseLocation + DIRSEP + GetDatabaseName() + DIRSEP + "key.csv" << std::endl;
 		CreateNewKey();
 		std::cout << "New key successfully created!" << std::endl;
 		conio::pause();
@@ -128,7 +128,7 @@ void UpdateDatabaseKeyMenu(void) {
 	delete[] str;
 	keyIn.close();
 	std::cout << "Updating entries..." << std::endl;
-	for (auto& entry : fs::directory_iterator(DatabaseLocation + "/" + GetDatabaseName())) {
+	for (auto& entry : fs::directory_iterator(DatabaseLocation + DIRSEP + GetDatabaseName())) {
 		std::string tmp = "." + ToLower(GetDatabaseName());
 		if (entry.path().extension() != tmp) continue;
 		std::vector<unsigned char> data(entry.file_size());
@@ -153,7 +153,7 @@ void UpdateDatabaseKeyMenu(void) {
 		fout.close();
 	}
 
-	std::fstream fout(DatabaseLocation + "/" + GetDatabaseName() + "/key.csm");
+	std::fstream fout(DatabaseLocation + DIRSEP + GetDatabaseName() + DIRSEP + "key.csm");
 	Key[0] = sysdat.elementList;
 	Key[1] = sysdat.skilltypeList;
 	Key[2] = sysdat.weapontypeList;

@@ -173,7 +173,7 @@ namespace conio {
 		while ((acc.size() < digits) || (digits < 1)) {
 			while (!valid) {
 				input = getch();
-				if ((input - char("0") < 0) || (input - char("0") > 9)) { valid = true; break; }
+				if ((input - char('0') < 0) || (input - char('0') > 9)) { valid = true; break; }
 				if (input == '\b' || input == '\127') { acc.resize(acc.size() - 1); }
 				if (specialCharactersEnabled) {
 					if (input == '\033') { return -1; } //Escape returns -1

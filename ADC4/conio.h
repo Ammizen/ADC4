@@ -42,6 +42,6 @@ namespace conio {
 	void invalidInput(void);
 	void clrscr(void);
 	bool consolePromptBool(void);
-	int consolePromptInt(int digits = -1, bool specialCharactersEnabled = true);
+	int consolePromptInt(int digits, bool specialCharactersEnabled);
 }
 #endif

@@ -2,7 +2,7 @@
 
 template <typename T>
 toml::table _ExportData(void) {
-	return;
+	return toml::table{};
 }
 
 template <>

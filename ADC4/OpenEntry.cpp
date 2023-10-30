@@ -26,7 +26,7 @@ void OpenEntryMenu(void) {
 			std::cout << "Please enter the ID of the file you wish to open; " << std::flush;
 			std::cin >> sel;
 			std::cin.clear();
-			for (auto& entry : fs::directory_iterator(DatabaseLocation + "\\" + GetDatabaseName())) {
+			for (auto& entry : fs::directory_iterator(DatabaseLocation + DIRSEP + GetDatabaseName())) {
 				int fID = std::strtol(entry.path().filename().string().substr(0, 5).c_str(), &endPtr, 10);
 				if (fID != sel) continue;
 				fileToOpen = entry.path().string();
@@ -47,7 +47,7 @@ void OpenEntryMenu(void) {
 			std::cout << "Please enter the filename of the file you wish to open; " << std::flush;
 			std::cin >> ssel;
 			std::cin.clear();
-			for (auto& entry : fs::directory_iterator(DatabaseLocation + "\\" + GetDatabaseName())) {
+			for (auto& entry : fs::directory_iterator(DatabaseLocation + DIRSEP + GetDatabaseName())) {
 				if (entry.path().filename().string().substr(6, entry.path().filename().string().length())!= ssel) continue;
 				fileToOpen = entry.path().string();
 				filename = entry.path().filename().string();
