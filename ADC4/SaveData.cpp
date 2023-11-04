@@ -66,6 +66,7 @@ void SaveData() {
 			return;
 		}
 	}
+
 	data = EncodeData();
 	std::stringstream ss;
 	ss << std::setw(5) << std::setfill('0') << ID;

@@ -28,8 +28,8 @@
 #include "toml.hpp"
 
 constexpr auto ADC_VERSION = 4;
-constexpr auto ADC_BUILD = 15;
-constexpr auto HEADER_BYTESIZE = 9;
+constexpr auto ADC_BUILD = 17;
+constexpr auto HEADER_BYTESIZE = 7;
 
 #ifdef _WIN32
 constexpr auto PLATFORM = "Windows";

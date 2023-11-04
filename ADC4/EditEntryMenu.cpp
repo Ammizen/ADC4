@@ -1,6 +1,7 @@
 #include "ADC4.h"
 #include "EditEntryMenu.h"
 #include "CreateEntry.h"
+#include "EditDatabaseKey.h"
 
 template<>
 void _EEM_EditValue<std::string>(std::string name, std::string* entry) {
@@ -176,8 +177,11 @@ std::list<std::pair<std::string, VALUEPTR>> _EEM_GetList<std::list<int>>(std::li
 }
 std::list<std::pair<std::string, VALUEPTR>> _EEM_GetList(std::vector<bool>* entry, std::vector<std::string>* ref) {
 	std::list<std::pair<std::string, VALUEPTR>> outdat;
+	std::cout << "\t+ Add new entry\n";
+	if (entry->empty()) return outdat;
 	for (int i = 0; i < entry->size(); i++) {
-		outdat.push_back({ ref->at(i), &entry[i] });
+		if (i >= ref->size()) { outdat.push_back({ ref->at(i), &entry[i] }); continue; }
+		outdat.push_back({ "UNDEFINED", &entry[i] });
 	}
 	return outdat;
 }
@@ -228,31 +232,35 @@ void _EEM_EditValue(std::pair<std::string, VALUEPTR> ptrInfo, std::pair<std::str
 		*currentCont = ptrInfo;
 		return;
 
-	case 16:
+	case 17:
 		_EEM_EditValue<int>(ptrInfo.first, std::get<int*>(ptrInfo.second));
 		break;
 
-	case 17:
-		_EEM_EditValue<int8_t>(ptrInfo.first, std::get<int8_t*>(ptrInfo.second));
+	case 16:
+		_EEM_EditValue<unsigned int>(ptrInfo.first, std::get<unsigned int*>(ptrInfo.second));
 		break;
 
 	case 18:
-		_EEM_EditValue<int16_t>(ptrInfo.first, std::get<int16_t*>(ptrInfo.second));
+		_EEM_EditValue<int8_t>(ptrInfo.first, std::get<int8_t*>(ptrInfo.second));
 		break;
 
 	case 19:
-		_EEM_EditValue<float>(ptrInfo.first, std::get<float*>(ptrInfo.second));
+		_EEM_EditValue<int16_t>(ptrInfo.first, std::get<int16_t*>(ptrInfo.second));
 		break;
 
 	case 20:
-		_EEM_EditValue<double>(ptrInfo.first, std::get<double*>(ptrInfo.second));
+		_EEM_EditValue<float>(ptrInfo.first, std::get<float*>(ptrInfo.second));
 		break;
 
 	case 21:
-		_EEM_EditValue<bool>(ptrInfo.first, std::get<bool*>(ptrInfo.second));
+		_EEM_EditValue<double>(ptrInfo.first, std::get<double*>(ptrInfo.second));
 		break;
 
 	case 22:
+		_EEM_EditValue<bool>(ptrInfo.first, std::get<bool*>(ptrInfo.second));
+		break;
+
+	case 23:
 		_EEM_EditValue<std::string>(ptrInfo.first, std::get<std::string*>(ptrInfo.second));
 		break;
 	}
@@ -260,7 +268,7 @@ void _EEM_EditValue(std::pair<std::string, VALUEPTR> ptrInfo, std::pair<std::str
 	return;
 }
 
-std::list<std::pair<std::string, VALUEPTR>> _EEM_GetList(VALUEPTR contPtr) {
+std::list<std::pair<std::string, VALUEPTR>> _EEM_GetList(VALUEPTR contPtr, std::pair<std::string, VALUEPTR> selCont) {
 	std::list<std::pair<std::string, VALUEPTR>> data;
 	switch (contPtr.index()) {
 	case 1:
@@ -279,7 +287,19 @@ std::list<std::pair<std::string, VALUEPTR>> _EEM_GetList(VALUEPTR contPtr) {
 		data = _EEM_GetList<std::list<ItemEffect>>(std::get<std::list<ItemEffect>*>(contPtr));
 		break;
 	case 6:
-		data = _EEM_GetList<std::vector<bool>>(std::get<std::vector<bool>*>(contPtr));
+		std::vector<std::string>* tmpPtr;
+		if (selCont.first == "Element Flags") &sysdat.elementList;
+		else if (selCont.first == "Skill Type") &sysdat.skilltypeList;
+		else if (selCont.first == "Weapon Type") &sysdat.weapontypeList;
+		else if (selCont.first == "Armor Type") &sysdat.armortypeList;
+		else if (selCont.first == "Equip Type") &sysdat.equipmenttypeList;
+		else if (selCont.first == "Item Type") &sysdat.itemTypeList;
+		else if (selCont.first == "Effect Flags") &sysdat.itemEffectTypeList;
+		else if (selCont.first == "Affliction Flags") &sysdat.statusEffectList;
+		else if (selCont.first == "Magic Type") &sysdat.magicAbilityTypes;
+		else if (selCont.first == "Phys Type") &sysdat.physAbilityTypes;
+		else if (selCont.first == "Passive Type") &sysdat.passiveAbilityTypes;
+		data = _EEM_GetList(std::get<std::vector<bool>*>(contPtr), tmpPtr);
 		break;
 	case 7:
 		data = _EEM_GetList<std::list<std::list<int>>>(std::get<std::list<std::list<int>>*>(contPtr));
@@ -327,25 +347,30 @@ void _EEM_MenuDisplay(std::list<std::pair<std::string, VALUEPTR>>* subentryList,
 
 		if (subentry.second.index() > 15) { std::cout << " - "; }
 		switch (subentry.second.index()) {
-		case 16:
+		case 17:
 			std::cout << *std::get<int*>(subentry.second);
 			break;
-		case 17:
+
+		case 16:
+			std::cout << *std::get<unsigned int*>(subentry.second);
+			break;
+
+		case 18:
 			std::cout << *std::get<int8_t*>(subentry.second);
 			break;
-		case 18:
+		case 19:
 			std::cout << *std::get<int16_t*>(subentry.second);
 			break;
-		case 19:
+		case 20:
 			std::cout << *std::get<float*>(subentry.second);
 			break;
-		case 20:
+		case 21:
 			std::cout << *std::get<double*>(subentry.second);
 			break;
-		case 21:
+		case 22:
 			std::cout << *std::get<bool*>(subentry.second);
 			break;
-		case 22:
+		case 23:
 			std::string * foo = std::get<std::string*>(subentry.second);
 			if (foo->length() > 50) {
 				std::cout << foo->substr(0, 50) << "...";
@@ -362,7 +387,30 @@ void _EEM_MenuDisplay(std::list<std::pair<std::string, VALUEPTR>>* subentryList,
 	return;
 }
 
+void _EEM_CreateNewFlag(std::pair<std::string, VALUEPTR>* currentCont) {
+	int sel;
+	char input = std::toupper(conio::getch());
+	bool exitMenu = false;
+	std::vector<bool>* vec = std::get<std::vector<bool>*>(currentCont->second);
+	while (!exitMenu) {
+		if (input == '\033') return;
+		if ((input >= '0') && (input <= '9')) { sel = input - '0'; exitMenu = true; }
+		if ((input >= 'A') && (input <= 'Z')) { sel = input + 10 - 'A'; exitMenu = true; }
+		else { conio::invalidInput(); }
+	}
+	move(vec, vec->size() - 1, sel);
+	std::get<std::vector<bool>*>(currentCont->second)->push_back(false);
+}
+
 std::pair<std::string, VALUEPTR> _EEM_MenuInput(std::list<std::pair<std::string, VALUEPTR>>* subentryList, std::pair<std::string, VALUEPTR>* currentCont, std::list<std::pair<std::string, VALUEPTR>>* ptrHistory, bool* ExitMenu) {
+
+	if (currentCont->second.index() == 6) {
+		char input = conio::getch();
+
+		if (input == '+') {}
+		if (input == '-') {}
+	}
+
 	char input = conio::getch();
 	int sel;
 	std::vector<std::pair<std::string, VALUEPTR>> killme{ std::begin(*subentryList), std::end(*subentryList) };
@@ -388,7 +436,7 @@ void _EditEntryMenu<Item>(Item entry) {
 	bool ExitMenu = false;
 	while (!ExitMenu) {
 		conio::clrscr();
-		subentryList = _EEM_GetList(currentCont.second);
+		subentryList = _EEM_GetList(currentCont.second, currentCont);
 		_EEM_MenuDisplay(&subentryList, &ptrHistory, &currentCont);
 		std::cout << std::flush;
 		std::pair<std::string, VALUEPTR> sel = _EEM_MenuInput(&subentryList, &currentCont, &ptrHistory, &ExitMenu);
@@ -420,7 +468,7 @@ void _EditEntryMenu<Enemy>(Enemy entry) {
 	bool ExitMenu = false;
 	while (!ExitMenu) {
 		conio::clrscr();
-		subentryList = _EEM_GetList(currentCont.second);
+		subentryList = _EEM_GetList(currentCont.second, currentCont);
 		_EEM_MenuDisplay(&subentryList, &ptrHistory, &currentCont);
 		std::cout << std::flush;
 		std::pair<std::string, VALUEPTR> sel = _EEM_MenuInput(&subentryList, &currentCont, &ptrHistory, &ExitMenu);
