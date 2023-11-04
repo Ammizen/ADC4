@@ -24,12 +24,10 @@ std::vector<unsigned char> ToBytes(std::vector<bool>* dat) {
 template<>
 std::vector<unsigned char> SerializeData<MetaData>(MetaData* data) {
 	std::vector<unsigned char> outdat;
-	std::vector<unsigned char> tmp = ToBytes((uint32_t)data->checksum);
-	AppendVector(&outdat, tmp);
+	std::vector<unsigned char> tmp;
 	outdat.push_back(u_char(data->datatype));
 	outdat.push_back(u_char(ADC_VERSION));
 	outdat.push_back(u_char(ADC_BUILD));
-	tmp = ToBytes((int16_t)data->ID);
 	AppendVector(&outdat, tmp);
 	return outdat;
 }

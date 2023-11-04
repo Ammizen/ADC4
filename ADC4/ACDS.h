@@ -75,7 +75,7 @@ struct ItemData {
 	std::vector<bool> itemType{ false, false, false, false, false };
 	std::string itemName = "";
 	std::string itemDesc = "";
-	int itemValue = 0;
+	unsigned int itemValue = 0;
 	float itemWeight = 0.f;
 
 	ItemData() = default;
@@ -170,13 +170,14 @@ typedef std::variant<
 	EnemyAbilities,				//13
 	std::list<DropData>,		//14
 	DropData,					//15
-	int,						//16
-	int8_t,						//17
-	int16_t,					//18
-	float,						//19
-	double,						//20
-	bool,						//21
-	std::string					//22
+	unsigned int,				//16
+	int,						//17
+	int8_t,						//18
+	int16_t,					//19
+	float,						//20
+	double,						//21
+	bool,						//22
+	std::string					//23
 > VALUETYPES;
 typedef std::variant <
 	std::monostate*,			//0
@@ -195,13 +196,14 @@ typedef std::variant <
 	EnemyAbilities*,			//13
 	std::list<DropData>*,		//14
 	DropData*,					//15
-	int*,						//16
-	int8_t*,					//17
-	int16_t*,					//18
-	float*,						//19
-	double*,					//20
-	bool*,						//21
-	std::string*				//22
+	unsigned int*,				//16
+	int*,						//17
+	int8_t*,					//18
+	int16_t*,					//19
+	float*,						//20
+	double*,					//21
+	bool*,						//22
+	std::string*				//23
 > VALUEPTR;
 
 typedef std::variant<

@@ -1,5 +1,6 @@
 #include "ADC4.h"
 #include "SerializeData.h"
+#include "Checksum.h"
 
 std::vector<unsigned char> EncodeData() {
 	std::string StatusString = "Beginning data serialization process...";

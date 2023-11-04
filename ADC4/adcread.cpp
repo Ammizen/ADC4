@@ -13,12 +13,18 @@ namespace adcrw {
 	}
 
 	std::vector<unsigned char> ReadFile(std::fstream* file, int filesize) {
-		file->seekg(std::ios::end);
 		file->seekg(std::ios::beg);
-		std::vector<unsigned char> outdat(filesize);
-		char* buffer = new char[filesize];
+		std::vector<unsigned char> outdat(0);
+		char* buffer = new char[filesize + 1];
 		file->read(buffer, filesize);
-		memcpy(&outdat.front(), &buffer, sizeof(buffer));
+		std::cout << std::endl << std::endl;
+		for (int i = 0; i < filesize; i++) {
+			std::cout << (int)buffer[i] << " ";
+		}
+		std::cout << std::endl << std::endl;
+		//buffer[filesize] = '\0';
+		//memcpy(outdat.data(), &buffer, sizeof(buffer));
+		std::copy(&buffer[0], &buffer[filesize], std::back_inserter(outdat));
 		return outdat;
 	}
 

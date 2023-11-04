@@ -67,48 +67,68 @@ ItemEffect ParseData<ItemEffect>(std::vector<unsigned char>* indata, int pos) {
 
 template<>
 Item ParseData<Item>(std::vector<unsigned char>* indata, std::string filename) {
-	Item item = Item();
-	std::pair<int, std::string> tmp;
+	char* dataMem = new char[indata->size()];
 	char* endPtr;
+	char* string = new char[10000];
+	memcpy(dataMem, indata->data(), indata->size());
+	//std::copy(indata->begin(), indata->end(), dataMem);
+	//memcpy(&dataMem, &indata->at(0), indata->size());
 
-	item.meta.filename = filename.substr(6, filename.find_last_of('.') - 6);
-	int ptr = 0;
-
-	memcpy(&item.meta.checksum, &indata->at(ptr), 4);
-	ptr += 4;
-
-	memcpy(&item.meta.datatype, &indata->at(ptr), 1);
-	ptr += 1 + 2; //Skip 2 Bytes... ADC Ver. & Build.
-
-	item.meta.ID = std::strtol(filename.substr(0, 5).c_str(), &endPtr, 10);
-	//memcpy(&item.meta.ID, &indata->at(ptr), 2);
-	ptr += 2;
-
-	std::vector<unsigned char> flagBuffer(ceil((double)sysdat.itemTypeList.size() / 8.0));
-	item.data.itemType = DeconstructBytes(&flagBuffer, sysdat.itemTypeList.size());
-	ptr += ceil((double)sysdat.itemTypeList.size() / 8.0);
-
-	tmp = GetString(indata, ptr);
-	item.data.itemName = tmp.second;
-	ptr += tmp.first;
-
-	tmp = GetString(indata, ptr);
-	item.data.itemDesc = tmp.second;
-	ptr += tmp.first;
-
-	memcpy(&item.data.itemValue, &indata->at(ptr), 4);
-	ptr += 4;
-
-	memcpy(&item.data.itemWeight, &indata->at(ptr), 2);
-	ptr += 2;
-
-	int numOfEffects = 0;
-	memcpy(&numOfEffects, &indata->at(ptr), 4);
-	std::list<ItemEffect> effects(numOfEffects);
-	for (int i = 0; i < numOfEffects; i++) {
-		effects.push_back(ParseData<ItemEffect>(indata, ptr));
-		ptr += sizeof(ItemEffect);
+	//Dumping memory to cout
+	for (unsigned char c : *indata) {
+		std::cout << (int)c << " ";
 	}
 
+	conio::pause();
+
+	int checksum;
+	memcpy(&checksum, dataMem, sizeof(int));
+	int ID = std::strtol(filename.substr(0, 5).c_str(), &endPtr, 10);
+	std::string fn = filename.substr(6, filename.find_last_of('.') - 6);
+	MetaData meta(ADT_ITEM, checksum, ID, fn);
+
+	Item item = Item();
+	item.meta = meta;
+	dataMem += 7;
+
+	int flagSize = ceil(sysdat.itemTypeList.size() / 8);
+	memcpy(&item.data.itemType, dataMem, flagSize);
+	dataMem += flagSize;
+	
+	char* ptr = string;
+	bool contLoop = true;
+	while (contLoop) {
+		if (*dataMem == '\0') contLoop = false;
+		*ptr = *dataMem;
+		dataMem++;
+		ptr++;
+	}
+	item.data.itemName = string;
+	memset(string, 0, 10000);
+
+	ptr = string;
+	contLoop = true;
+	while (contLoop) {
+		if (*dataMem == '\0') contLoop = false;
+		*ptr = *dataMem;
+		dataMem++;
+		ptr++;
+	}
+	item.data.itemDesc = string;
+
+	unsigned int tmpValue;
+	memcpy(&tmpValue, dataMem, sizeof(int));
+	item.data.itemValue = reinterpret_cast<int>(&tmpValue);
+	dataMem += sizeof(int);
+
+	memcpy(&item.data.itemWeight, dataMem, sizeof(float));
+	dataMem += sizeof(float);
+
+	int listSize;
+	memcpy(&listSize, dataMem, sizeof(short));
+	dataMem += sizeof(short);
+	std::list<ItemEffect> effects = std::list<ItemEffect>();
+
+	item.effects = effects;
 	return item;
 }
